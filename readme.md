@@ -25,5 +25,5 @@ To regenerate older images after setting your breakpoints, you can use the plugi
 Plugin Page: [RespImage - WordPress Plugin][2]
 
   [1]: http://scottjehl.github.io/picturefill/
-  [2]: http://elf02.de/2014/07/13/respimage-wordpress-plugin/
+  [2]: http://elf02.de/2014/07/14/respimage-wordpress-plugin/
   [3]: http://wordpress.org/plugins/regenerate-thumbnails/

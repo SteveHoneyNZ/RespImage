@@ -2,7 +2,7 @@
 
 /*
 Plugin Name: RespImage
-Plugin URI: http://elf02.de/2014/07/13/respimage-wordpress-plugin/
+Plugin URI: http://elf02.de/2014/07/14/respimage-wordpress-plugin/
 Description: Responsive image solution using Picturefill.js.
 Version: 1.0.0
 Author: ChrisB
