@@ -12,35 +12,43 @@ final class respimage {
         'sizes' => array(
             'size1' => array(
                 'name' => 'large-img',
-                'size' => 900
+                'size' => 900,
+                'calc2x' => 1
             ),
             'size2' => array(
                 'name' => 'medium-img',
-                'size' => 768
+                'size' => 768,
+                'calc2x' => 1
             ),
             'size3' => array(
                 'name' => 'small-img',
-                'size' => 320
+                'size' => 320,
+                'calc2x' => 1
             ),
             'size4' => array(
                 'name' => '',
-                'size' => 0
+                'size' => 0,
+                'calc2x' => 1
             ),
             'size5' => array(
                 'name' => '',
-                'size' => 0
+                'size' => 0,
+                'calc2x' => 1
             ),
             'size6' => array(
                 'name' => '',
-                'size' => 0
+                'size' => 0,
+                'calc2x' => 1
             ),
             'size7' => array(
                 'name' => '',
-                'size' => 0
+                'size' => 0,
+                'calc2x' => 1
             ),
             'size8' => array(
                 'name' => '',
-                'size' => 0
+                'size' => 0,
+                'calc2x' => 1
             )
         ),
         'mq' => array(
@@ -52,8 +60,7 @@ final class respimage {
         ),
         '_fallback' => 0,
         '_native' => 0,
-        '_async' => 1,
-        '_2xcalc' => 1
+        '_async' => 1
     );
 
     private static $options_name = 'elf02_respimage';
@@ -90,7 +97,7 @@ final class respimage {
                 add_image_size($value['name'], $size);
 
                 // Very secret and magical pixel calculation
-                if(self::$options['_2xcalc']) {
+                if($value['calc2x']) {
                     $size2x = $size * 2;
                     $name2x = $value['name'].'@2x';
                     self::$options['sizes'][$key]['size2x'] = $size2x;
@@ -195,6 +202,7 @@ final class respimage {
         foreach($input['sizes'] as $key => $value) {
             $input['sizes'][$key]['name'] = sanitize_text_field($value['name']);
             $input['sizes'][$key]['size'] = intval($value['size']);
+            $input['sizes'][$key]['calc2x'] = intval($value['calc2x']);
         }
 
         foreach($input['mq'] as $key => $value) {
@@ -204,7 +212,6 @@ final class respimage {
         $input['_fallback'] = intval($input['_fallback']);
         $input['_native'] = intval($input['_native']);
         $input['_async'] = intval($input['_async']);
-        $input['_2xcalc'] = intval($input['_2xcalc']);
 
         return $input;
     }
@@ -224,6 +231,7 @@ final class respimage {
                     <tr>
                         <th><?php _e('Image Size Name', 'respimage'); ?></th>
                         <th><?php _e('Image Size (width)', 'respimage'); ?></th>
+                        <th><?php _e('Add 2x', 'respimage'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -241,6 +249,15 @@ final class respimage {
                             $str1 = self::$options_name . '[sizes]['. $key .'][size]';
                             $str2 = $value['size'];
                             printf('<td><input type="text" name="%s" value="%s" style="width:100%%;"></td>',
+                                $str1,
+                                $str2
+                            );
+
+                            $str1 = self::$options_name . '[sizes]['. $key .'][calc2x]';
+                            $str2 = checked($value['calc2x'], 1, false);
+                            $str3 = 'cb_calc2x_' . $key;
+                            printf('<td align="center"><input id="%s" type="checkbox" name="%s" value="1" %s></td>',
+                                $str3,
                                 $str1,
                                 $str2
                             );
@@ -279,17 +296,6 @@ final class respimage {
                 </tbody>
                 </table>
                 <div style="margin-top: 20px;">
-                    <p>
-                        <label for="cb_2xcalc">
-                        <?php
-                            printf('<input id="cb_2xcalc" type="checkbox" name="%s" value="1" %s>',
-                                self::$options_name.'[_2xcalc]',
-                                checked(self::$options['_2xcalc'], 1, false)
-                            );
-                            _e('Calculate 2x sizes?', 'respimage');
-                        ?>
-                        </label>
-                    </p>
                     <p>
                         <label for="cb_fallback">
                         <?php
@@ -456,7 +462,7 @@ final class respimage {
             if(!empty($value['name'])) {
                 $imgsrc = wp_get_attachment_image_src($image_id, $value['name']);
 
-                if(self::$options['_2xcalc']) {
+                if($value['calc2x']) {
 
                     $imgsrc_2x = wp_get_attachment_image_src($image_id, $value['name'].'@2x');
                     $srcset[] = sprintf('%s %sw, %s %sw, ',
