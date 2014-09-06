@@ -199,21 +199,23 @@ final class respimage {
      * Validate and sanitize options
      */
     public function validate($input) {
+        $valid = array();
+
         foreach($input['sizes'] as $key => $value) {
-            $input['sizes'][$key]['name'] = sanitize_text_field($value['name']);
-            $input['sizes'][$key]['size'] = intval($value['size']);
-            $input['sizes'][$key]['calc2x'] = intval($value['calc2x']);
+            $valid['sizes'][$key]['name'] = sanitize_text_field($value['name']);
+            $valid['sizes'][$key]['size'] = intval($value['size']);
+            $valid['sizes'][$key]['calc2x'] = (isset($value['calc2x'])) ? intval($value['calc2x']) : 0;
         }
 
         foreach($input['mq'] as $key => $value) {
-            $input['mq'][$key] = sanitize_text_field($value);
+            $valid['mq'][$key] = sanitize_text_field($value);
         }
 
-        $input['_fallback'] = intval($input['_fallback']);
-        $input['_native'] = intval($input['_native']);
-        $input['_async'] = intval($input['_async']);
+        $valid['_fallback'] = (isset($input['_fallback'])) ? intval($input['_fallback']) : 0;
+        $valid['_native'] = (isset($input['_native'])) ? intval($input['_native']) : 0;
+        $valid['_async'] = (isset($input['_async'])) ? intval($input['_async']) : 0;
 
-        return $input;
+        return $valid;
     }
 
 
@@ -280,7 +282,7 @@ final class respimage {
                         foreach(self::$options['mq'] as $key => $value) {
                             echo '<tr>';
 
-                            $str1 = ($key==='mq1') ? $i++ . ' (default)' : $i++;
+                            $str1 = ($key === 'mq1') ? $i++ . ' (default)' : $i++;
                             printf('<td>%s</td>', $str1);
 
                             $str1 = self::$options_name . '[mq]['. $key .']';
@@ -295,7 +297,7 @@ final class respimage {
                     ?>
                 </tbody>
                 </table>
-                <div style="margin-top: 20px;">
+                <div style="margin-top:20px;">
                     <p>
                         <label for="cb_fallback">
                         <?php
@@ -406,6 +408,8 @@ final class respimage {
     public function filter_responsive_images($content) {
         // Check for empty options
         if(empty(self::$options)) return $content;
+        // Check for feed
+        if(is_feed()) return $content;
 
         $content = preg_replace_callback(
             '/<img.*?data-responsive=[\'"](.*?)[\'"].*?>/i',
@@ -439,10 +443,15 @@ final class respimage {
 
         $image_id = intval($image_id);
         $mq_id = intval($mq_id);
+        $mq_id = (in_array($mq_id, range(1, 5))) ? $mq_id : 1;
         $mq = self::$options['mq']['mq'.$mq_id];
 
         // Check image and mq id
         if(empty($image_id) || empty($mq)) return $ori_markup;
+
+        // Check for existing image id
+        $imgsrc_full = wp_get_attachment_image_src($image_id, 'full');
+        if(false === $imgsrc_full) return $ori_markup;
 
         // Get class names
         preg_match('/class=[\'"](.*?)[\'"]/i', $ori_markup, $match);
@@ -451,11 +460,7 @@ final class respimage {
             '';
 
         // Check for fallback image
-        $img_fallback = '';
-        if(self::$options['_fallback']) {
-            $imgsrc_full = wp_get_attachment_image_src($image_id, 'full');
-            $img_fallback = sprintf(' src="%s"', $imgsrc_full[0]);
-        }
+        $img_fallback = (self::$options['_fallback']) ? sprintf(' src="%s"', $imgsrc_full[0]) : '';
 
         // Collect all images
         foreach(self::$options['sizes'] as $key => $value) {
