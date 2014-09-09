@@ -12,13 +12,15 @@ License: MIT
 
 defined('ABSPATH') OR exit;
 
+define( 'RESPIMAGE_FILE', __FILE__ );
+define( 'RESPIMAGE_PLUGIN_DIR', untrailingslashit( plugin_dir_path( RESPIMAGE_FILE ) ) );
+define( 'RESPIMAGE_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( RESPIMAGE_FILE ) ), basename( RESPIMAGE_FILE ) ) ) );
 
-define('PLUGIN_FILE_RESPIMAGE', __FILE__);
 
 require_once(
     sprintf(
         '%s/inc/%s.class.php',
-        dirname(__FILE__),
+        RESPIMAGE_PLUGIN_DIR,
         'respimage'
     )
 );
