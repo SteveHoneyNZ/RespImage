@@ -10,7 +10,7 @@ Author URI: http://elf02.de
 License: MIT
 */
 
-defined('ABSPATH') OR exit;
+defined( 'ABSPATH' ) OR exit;
 
 define( 'RESPIMAGE_FILE', __FILE__ );
 define( 'RESPIMAGE_PLUGIN_DIR', untrailingslashit( plugin_dir_path( RESPIMAGE_FILE ) ) );

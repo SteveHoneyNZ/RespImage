@@ -1,6 +1,6 @@
 <?php
 
-defined('ABSPATH') OR exit;
+defined( 'ABSPATH' ) OR exit;
 
 
 final class respimage {
@@ -206,16 +206,16 @@ final class respimage {
         foreach( $input['sizes'] as $key => $value ) {
             $valid['sizes'][$key]['name'] = sanitize_text_field( $value['name'] );
             $valid['sizes'][$key]['size'] = intval( $value['size'] );
-            $valid['sizes'][$key]['calc2x'] = ( isset( $value['calc2x'] ) ) ? intval( $value['calc2x'] ) : 0;
+            $valid['sizes'][$key]['calc2x'] = (int) isset( $value['calc2x'] );
         }
 
         foreach($input['mq'] as $key => $value) {
             $valid['mq'][$key] = sanitize_text_field( $value );
         }
 
-        $valid['_fallback'] = ( isset( $input['_fallback'] ) ) ? intval( $input['_fallback'] ) : 0;
-        $valid['_native'] = ( isset( $input['_native'] ) ) ? intval( $input['_native'] ) : 0;
-        $valid['_async'] = ( isset( $input['_async'] ) ) ? intval( $input['_async'] ) : 0;
+        $valid['_fallback'] = (int) isset( $input['_fallback'] );
+        $valid['_native'] = (int) isset( $input['_native'] );
+        $valid['_async'] = (int) isset( $input['_async'] );
 
         return $valid;
     }
@@ -485,12 +485,21 @@ final class respimage {
 
         // Collect all images
         foreach( self::$options['sizes'] as $key => $value ) {
+
             if( !empty($value['name'] ) ) {
+
                 $imgsrc = wp_get_attachment_image_src( $image_id, $value['name'] );
+                if( false === $imgsrc ) {
+                    continue;
+                }
 
                 if( $value['calc2x'] ) {
 
                     $imgsrc_2x = wp_get_attachment_image_src( $image_id, $value['name'].'@2x' );
+                    if( false === $imgsrc_2x ) {
+                        continue;
+                    }
+
                     $srcset[] = sprintf(
                         '%s %sw, %s %sw, ',
                         $imgsrc[0],
@@ -509,6 +518,7 @@ final class respimage {
 
                 }
             }
+
         }
 
         // Check for valid sizes
