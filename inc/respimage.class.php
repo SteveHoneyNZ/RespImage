@@ -451,8 +451,7 @@ final class respimage {
         if(strpos($image_id, '/')) {
             $a = explode('/', $image_id);
             if(count($a) === 2) {
-                $image_id = $a[0];
-                $mq_id = $a[1];
+                list($image_id, $mq_id) = $a;
             }
         }
 
