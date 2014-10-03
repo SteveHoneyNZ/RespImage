@@ -246,7 +246,7 @@ final class respimage {
                             $str1 = self::$options_name . '[sizes]['. $key .'][name]';
                             $str2 = $value['name'];
                             printf(
-                                '<td><input type="text" name="%s" value="%s" style="width:100%%;"></td>',
+                                '<td><input type="text" name="%s" value="%s" style="width:100%;"></td>',
                                 $str1,
                                 $str2
                             );
@@ -254,7 +254,7 @@ final class respimage {
                             $str1 = self::$options_name . '[sizes]['. $key .'][size]';
                             $str2 = $value['size'];
                             printf(
-                                '<td><input type="text" name="%s" value="%s" style="width:100%%;"></td>',
+                                '<td><input type="text" name="%s" value="%s" style="width:100%;"></td>',
                                 $str1,
                                 $str2
                             );
@@ -293,7 +293,7 @@ final class respimage {
                             $str1 = self::$options_name . '[mq]['. $key .']';
                             $str2 = $value;
                             printf(
-                                '<td><input type="text" name="%s" value="%s" style="width:100%%;"></td>',
+                                '<td><input type="text" name="%s" value="%s" style="width:100%;"></td>',
                                 $str1,
                                 $str2
                             );
